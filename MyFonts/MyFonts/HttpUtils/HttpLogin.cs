@@ -27,20 +27,8 @@ namespace MyFonts
                     {"Referer",RefererUrl},
                     {"AllowAutoRedirect","true" }
                 }));
-           
-         /*   return GetResponce(ExecuteGetRequest(new Dictionary<string, string>
-                {
-                   {"Cookie",CookieParamsToLogin }
-                }, new Dictionary<string, string>
-                {
-                    {"Accept","applicataion/json, text/javascript, #1#*; q=0.01" },
-                    { "Url",GetUrl},
-                    {"ContentType","application/json" },
-                    {"Referer",RefererUrl},
-                    {"AllowAutoRedirect","true" }
-                }
-            ));*/
-            return responceFromPost;
+         
+         return responceFromPost;
         }
     }
 }

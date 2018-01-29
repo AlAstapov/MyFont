@@ -13,17 +13,13 @@ namespace TestLibrary.Tests
         
     class PositiveSearchTests : BaseSetUp
         {
-           private static EmailProvider emailProvider = new EmailProvider();
            private static string gmailForGenerate = "aliaksandrastapau";
-            private static string myFontEmail = "hello@myfonts.com";
-
-
+           private static string myFontEmail = "hello@myfonts.com";
 
         public PositiveSearchTests(string browser) :base(browser)
         {
         }
-         
-            static object[] Users =
+         static object[] Users =
             {   new object[] { "user1","astapov@mail.ru","zxcvasdfqwer123"},
                 new object[] { "user1", EmailGenerator.GenerateEmail(),"zxcvasdfqwer123"},
                 new object[] { "user2", EmailGenerator.GenerateEmail(), "zxcvasdfqwer123"},
@@ -52,21 +48,21 @@ namespace TestLibrary.Tests
             if(isRegistred) yourAccountPage.SignOut();
             Assert.True(isRegistred,"User haven't been registred");
         }
-           /*[Test,TestCaseSource("Users")]
+           [Test,TestCaseSource("Users")]
             public void TestEmailSentFromMyFont(string name, string email, string password)
             {
                 User user = new User(name, email, password);
                 MailInator mailInator = new MailInator(Driver);
                 EmailsWindow emailsWindow = mailInator.OpenEmailsWindow(user.Email);
-                Assert.True(emailsWindow.IsMessageFromEmailPresentOnPage(myFontEmail));
-            }*/
-            [Test]
+                Assert.True(emailsWindow.IsMessageFromEmailPresentOnPage(myFontEmail),"There are no registration confirm email");
+            }
+           /* [Test]
             public void TestEmailSentFromMyFont()
             {
                 string emailll = "astapov95@mailinator.com";
                 MailInator mailInator = new MailInator(Driver);
                 EmailsWindow emailsWindow = mailInator.OpenEmailsWindow(emailll);
                 Assert.True(emailsWindow.IsMessageFromEmailPresentOnPage("al_astapov@mail.ru"));
-            }
+            }*/
     }
 }

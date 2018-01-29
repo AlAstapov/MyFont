@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 
 
 namespace MyFonts.Services
@@ -7,9 +6,7 @@ namespace MyFonts.Services
    public static class EmailGenerator
    {
         private static int incrementEmail = 5;
-       private static string emailPrefix = "@mailinator.com";
-
-
+        private static string emailPrefix = "@mailinator.com";
 
        public static string GenerateEmail()
         {

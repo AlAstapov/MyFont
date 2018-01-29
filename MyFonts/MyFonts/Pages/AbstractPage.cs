@@ -15,12 +15,6 @@ namespace MyFonts
             return Driver.FindElement(locator);
         }
 
-        public void HighLightElement(IWebElement element)
-        {
-            IJavaScriptExecutor js = Driver as IJavaScriptExecutor;
-            js.ExecuteAsyncScript("arguments[0].style.backgroundColor = '" + "yellow" + "'", element);
-        }
-
         public void SwithToFrame(string xpath)
         {
             IWebElement frame = FindElement(By.XPath(xpath));

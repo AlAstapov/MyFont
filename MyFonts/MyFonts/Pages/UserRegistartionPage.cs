@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameworkCore;
-using MyFonts.BusinessObjects;
+﻿using MyFonts.BusinessObjects;
 using MyFonts.WorkWithFile;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.Events;
+
 
 namespace MyFonts.Pages
 {
