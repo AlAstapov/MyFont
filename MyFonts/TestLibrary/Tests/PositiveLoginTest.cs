@@ -60,16 +60,20 @@ namespace TestLibrary.Tests
             EmailsWindow emailsWindow = mailInator.OpenEmailsWindow(user.Email);
             Assert.True(emailsWindow.IsMessageFromEmailPresentOnPage(myFontEmail), "There are no registration confirm email");
         }
-      /*  [Test]
-        public void TestEmailSentFromMyFont()
+        /*  [Test]
+          public void TestEmailSentFromMyFont()
+          {
+              string emailll = "astapov95@mailinator.com";
+              DriverClass.GoToUrl(MailInator.url);
+              MailInator mailInator = new MailInator();
+              EmailsWindow emailsWindow = mailInator.OpenEmailsWindow(emailll);
+              Assert.True(emailsWindow.IsMessageFromEmailPresentOnPage("al_astapov@mail.ru"), "There are no registration email");
+          }*/
+        [Test]
+        public void LoGinHttpLego()
         {
-            string emailll = "astapov95@mailinator.com";
-            DriverClass.GoToUrl(MailInator.url);
-            MailInator mailInator = new MailInator();
-            EmailsWindow emailsWindow = mailInator.OpenEmailsWindow(emailll);
-            Assert.True(emailsWindow.IsMessageFromEmailPresentOnPage("al_astapov@mail.ru"), "There are no registration email");
-        }*/
-        
-       
+
+        }
+
     }
 }

@@ -12,7 +12,6 @@ namespace MyFonts.Pages
         public static By iFrameLocator = By.XPath("//iframe[@class='dropdownLoginFrame']");
         private BaseElement signUp = new BaseElement(By.XPath("//a[@data-qe-id='signup']"),"Sing up");
         
-
         public SignInDropMenu()
         {
            
@@ -20,9 +19,9 @@ namespace MyFonts.Pages
 
         public UserRegistartionPage SingUp()
         {
-            signUp.JsClick();
-            Thread.Sleep(2000);
+           signUp.JsClick();
            return new UserRegistartionPage();
         }
+      
     }
 }

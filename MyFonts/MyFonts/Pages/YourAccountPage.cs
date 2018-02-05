@@ -6,8 +6,7 @@ namespace MyFonts.Pages
 {
     public class YourAccountPage : AbstractPage
     {
-        private By LableLocator = By.XPath("//ul[@id='headcrumbs']");
-        public By LogOutLocator = By.XPath("//a[@id='signOut']");
+       public By LogOutLocator = By.XPath("//a[@id='signOut']");
         private BaseElement UserNameElement = new BaseElement(By.XPath("//span[@id='headerLoginUsername']"), "UserNameElement");
 
         public YourAccountPage()
