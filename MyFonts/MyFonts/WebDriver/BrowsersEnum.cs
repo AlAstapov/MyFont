@@ -1,4 +1,4 @@
-﻿﻿namespace FrameworkCore.WebDriver
+﻿namespace FrameworkCore.WebDriver
 {
     public enum BrowsersEnum
     {

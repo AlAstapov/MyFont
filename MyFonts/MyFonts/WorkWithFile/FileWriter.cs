@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MyFonts.BusinessObjects;
 
 namespace MyFonts.WorkWithFile
@@ -19,7 +15,7 @@ namespace MyFonts.WorkWithFile
             fileStream = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.None);
             using (StreamWriter streamWriter = new StreamWriter(fileStream))
             {
-                streamWriter.WriteLine(user.Name + " " + user.Email + " " + user.Password,true);
+                streamWriter.WriteLine(user.Name + " " + user.Email + " " + user.Password, true);
             }
         }
 
@@ -40,12 +36,12 @@ namespace MyFonts.WorkWithFile
                     }
                 }
             }
-        return userList;
+            return userList;
         }
 
         public static void DeleteFile()
         {
-            if(File.Exists(filePath)) File.Delete(filePath);
+            if (File.Exists(filePath)) File.Delete(filePath);
 
         }
     }

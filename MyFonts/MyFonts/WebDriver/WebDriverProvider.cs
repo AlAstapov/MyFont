@@ -17,48 +17,48 @@ namespace FrameworkCore.WebDriver
         public static IWebDriver GetDriver(string browserName)
         {
             IWebDriver driver = null;
-            BrowsersEnum browserType = (BrowsersEnum) Enum.Parse(typeof(BrowsersEnum), browserName);
+            BrowsersEnum browserType = (BrowsersEnum)Enum.Parse(typeof(BrowsersEnum), browserName);
             switch (browserType)
             {
                 case BrowsersEnum.Chrome:
-                {
-                    driver = GetChromeDriver();
-                      break;
-                }
+                    {
+                        driver = GetChromeDriver();
+                        break;
+                    }
                 case BrowsersEnum.FireFox:
-                {
-                    driver = GetFireFoxDriver();
-                    break;
-                }
+                    {
+                        driver = GetFireFoxDriver();
+                        break;
+                    }
                 case BrowsersEnum.Edge:
-                {
-                    driver = GetEdgeDriver();
+                    {
+                        driver = GetEdgeDriver();
                         break;
-                }
+                    }
                 case BrowsersEnum.Opera:
-                {
-                    driver = GetOperaDriver();
+                    {
+                        driver = GetOperaDriver();
                         break;
-                }
+                    }
                 case BrowsersEnum.RemoteFireFox:
-                {
-                    driver = GetRemoteFireFoxDriver();
-                    break;   
-                }
-               default:
-                {
+                    {
+                        driver = GetRemoteFireFoxDriver();
+                        break;
+                    }
+                default:
+                    {
                         //Write to log
-                    driver = null;
-                    Environment.Exit(0);
-                    break;
-                }
+                        driver = null;
+                        Environment.Exit(0);
+                        break;
+                    }
             }
-           return driver;
+            return driver;
         }
 
         private static IWebDriver GetChromeDriver()
         {
-            
+
             IWebDriver driver = new ChromeDriver();
             return driver;
         }
@@ -72,8 +72,8 @@ namespace FrameworkCore.WebDriver
 
         private static IWebDriver GetEdgeDriver()
         {
-           IWebDriver driver = new EdgeDriver();
-           return driver;
+            IWebDriver driver = new EdgeDriver();
+            return driver;
         }
 
         private static IWebDriver GetOperaDriver()
@@ -86,7 +86,7 @@ namespace FrameworkCore.WebDriver
             var options = new FirefoxOptions();
             var capabilities = options.ToCapabilities();
             return new RemoteWebDriver(new Uri("http://localhost:5566/wd/hub"), capabilities);
-            
+
         }
     }
 }

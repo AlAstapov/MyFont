@@ -1,29 +1,25 @@
-﻿using MyFonts.Pages.Email;
+﻿using MyFonts.Elements;
+using MyFonts.Pages.Email;
 using OpenQA.Selenium;
 
 namespace MyFonts.Pages
 {
-   public class MailInator : AbstractPage
+    public class MailInator : AbstractPage
     {
-        private static string url = "https://www.mailinator.com/";
+        public static string url = "https://www.mailinator.com/";
+        private TextBox InsertEmailBox = new TextBox(By.XPath("//input[@id='inboxfield']"), "InsertEmailBox");
+        private Button GoButton = new Button(By.XPath("//button[@class='btn btn-dark']"), "Fo Button");
 
-        public By InsertEmailBoxLocator = By.XPath("//input[@id='inboxfield']");
-        public By GoButtonLocator = By.XPath("//button[@class='btn btn-dark']");
-
-        private IWebElement InsertEmailBoxElement => FindElement(InsertEmailBoxLocator);
-        private IWebElement GoButtonElement => FindElement(GoButtonLocator);
-
-        public MailInator(IWebDriver driver)
+        public MailInator()
         {
-            Driver = driver;
-            Driver.Navigate().GoToUrl(url);
         }
 
         public EmailsWindow OpenEmailsWindow(string email)
         {
-            InsertEmailBoxElement.SendKeys(email);
-            GoButtonElement.Click();
-            return new EmailsWindow(Driver);
+            InsertEmailBox.SendKeys(email);
+            GoButton.Click();
+            return new EmailsWindow();
+
         }
     }
 }

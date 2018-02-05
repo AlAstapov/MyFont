@@ -1,4 +1,5 @@
 ﻿using MyFonts.BusinessObjects;
+using MyFonts.Elements;
 using MyFonts.WorkWithFile;
 using OpenQA.Selenium;
 
@@ -7,36 +8,32 @@ namespace MyFonts.Pages
 {
     public class UserRegistartionPage : AbstractPage
     {
-        public By YourNameBoxLocator = By.XPath("//input[@name='newinfo[name]']");
-        public By EmailAdressBoxLocator = By.XPath("//input[@name='newinfo[emailAddress]']");
-        public By PasswordBoxLocator = By.XPath("//input[@name='newinfo[password]']");
-        public By PasswordBoxAgaingLocator = By.XPath("//input[@name='newinfo[confirmPassword]']");
-        public By CreateAccountButtonLocator = By.XPath("//input[@value='Create Account']");
+        private TextBox YourNameBox = new TextBox(By.XPath("//input[@name='newinfo[name]']"), "YourNameBox");
+        private TextBox EmailAdressBox = new TextBox(By.XPath("//input[@name='newinfo[emailAddress]']"), "EmailAdressBox");
+        private TextBox PasswordBox = new TextBox(By.XPath("//input[@name='newinfo[password]']"), "PasswordBox");
+        private TextBox PasswordBoxAgain = new TextBox(By.XPath("//input[@name='newinfo[confirmPassword]']"), "PasswordBoxAgain");
+        private Button CreateAccountButton = new Button(By.XPath("//input[@value='Create Account']"), "CreateAccountButton");
 
-        private IWebElement YourNameBoxElement => FindElement(YourNameBoxLocator);
-        private IWebElement EmailAdressBoxElement => FindElement(EmailAdressBoxLocator);
-        private IWebElement PasswordBoxElement => FindElement(PasswordBoxLocator);
-        private IWebElement PasswordBoxAgaingElement => FindElement(PasswordBoxAgaingLocator);
-        private IWebElement CreateAccountButtonElement => FindElement(CreateAccountButtonLocator);
 
-        public UserRegistartionPage(IWebDriver driver)
+        public UserRegistartionPage()
         {
-            Driver = driver;
+
         }
 
-        public YourAccountPage RegisterNewUser(User user,out bool isRegistred)
+        public YourAccountPage RegisterNewUser(User user)
         {
-            YourNameBoxElement.SendKeys(user.Name);
-            EmailAdressBoxElement.SendKeys(user.Email);
-            PasswordBoxElement.SendKeys(user.Password);
-            PasswordBoxAgaingElement.SendKeys(user.Password);
-            CreateAccountButtonElement.Click();
+            bool isRegistred = false;
+            YourNameBox.SendKeys(user.Name);
+            EmailAdressBox.SendKeys(user.Email);
+            PasswordBox.SendKeys(user.Password);
+            PasswordBoxAgain.SendKeys(user.Password);
+            CreateAccountButton.Click();
 
-           YourAccountPage yourAccountPage = null;
-           try
+            YourAccountPage yourAccountPage = null;
+            try
             {
-                yourAccountPage = new YourAccountPage(Driver);
-                isRegistred = isUserRegistred(user, yourAccountPage);
+                yourAccountPage = new YourAccountPage();
+                isRegistred = yourAccountPage.IsUserLoggined(user);
             }
             catch (WebDriverTimeoutException e)
             {
@@ -49,9 +46,6 @@ namespace MyFonts.Pages
             return yourAccountPage;
         }
 
-        private bool isUserRegistred(User user,YourAccountPage yourAccountPage)
-        {
-            return user.Name == yourAccountPage.GetUsername();
-        }
+
     }
 }

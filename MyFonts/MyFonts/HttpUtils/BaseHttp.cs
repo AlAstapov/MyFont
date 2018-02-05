@@ -7,19 +7,28 @@ using System.Text;
 using OpenQA.Selenium;
 using Cookie = OpenQA.Selenium.Cookie;
 
+
 namespace MyFonts.HttpUtils
 {
-   public class BaseHttp
+    public class BaseHttp
     {
-        protected  string PostUrl ;
-        protected  string GetUrl ;
-        protected  string RefererUrl;
-        protected  string ParametrsToRequest = "";
-        protected  Cookie[] Cookies;
-        protected  string CookieParamsToLogin;
-        protected  string Responce;
+        protected string PostUrl;
+        protected string GetUrl;
+        protected string RefererUrl;
 
-        protected  HttpWebRequest ExecutePostRequest(string paramsToRequest, Dictionary<string, string> headers, Dictionary<string, string> properties)
+        protected string ParametrsToRequest = "";
+        protected Cookie[] Cookies;
+        protected string CookieParamsToLogin;
+        protected string _cookieTocken;
+        protected string Token;
+
+
+
+        protected string Responce;
+        protected string _loginLink;
+
+        protected HttpWebRequest ExecutePostRequest(string paramsToRequest, Dictionary<string, string> headers,
+            Dictionary<string, string> properties)
         {
             string formParams = paramsToRequest;
             byte[] byteArray = Encoding.ASCII.GetBytes(formParams);
@@ -27,24 +36,21 @@ namespace MyFonts.HttpUtils
             request.Method = "POST";
             request.ContentType = properties["ContentType"];
             request.Referer = properties["Referer"];
-            request.AllowAutoRedirect = Convert.ToBoolean(properties["AllowAutoRedirect"]);
-            request.ContentLength = byteArray.Length;
             request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
             foreach (var header in headers)
             {
                 request.Headers.Add(header.Key, header.Value);
             }
-          using (var stream = request.GetRequestStream())
-            {
-                stream.Write(byteArray, 0, byteArray.Length);
-            }
+            request.AllowAutoRedirect = Convert.ToBoolean(properties["AllowAutoRedirect"]);
+            request.ContentLength = byteArray.Length;
+            request.GetRequestStream().Write(byteArray, 0, byteArray.Length);
             return request;
         }
 
         protected HttpWebRequest ExecuteGetRequest(Dictionary<string, string> headers,
             Dictionary<string, string> properties)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(properties["Url"]);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(properties["url"]);
             request.Accept = properties["Accept"];
             request.Method = "GET";
             request.ContentType = properties["ContentType"];
@@ -61,7 +67,7 @@ namespace MyFonts.HttpUtils
         {
             using (HttpWebResponse responce = (HttpWebResponse)executePostRequest.GetResponse())
             {
-               using (StreamReader streamReader = new StreamReader(responce.GetResponseStream(), Encoding.UTF8))
+                using (StreamReader streamReader = new StreamReader(responce.GetResponseStream(), Encoding.UTF8))
                 {
                     Responce = streamReader.ReadToEnd();
                 }
@@ -75,8 +81,9 @@ namespace MyFonts.HttpUtils
             Cookies = driver.Manage().Cookies.AllCookies.ToArray();
             foreach (var cookie in Cookies)
             {
-                cookieParams += string.Format("{0},{1} ", cookie.Name, cookie.Value);
+                cookieParams += string.Format("{0}={1} ", cookie.Name, cookie.Value);
             }
+
             return cookieParams;
         }
     }
