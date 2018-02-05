@@ -21,6 +21,11 @@ namespace MyFonts.Elements
             IWebElement frame = FindElement(By.XPath(xpath));
             Driver.SwitchTo().Frame(frame);
         }
+        public static void SwithToFrame(By xpath)
+        {
+            IWebElement frame = FindElement(xpath);
+            Driver.SwitchTo().Frame(frame);
+        }
 
         public static ReadOnlyCollection<IWebElement> FindElements(By locator)
         {

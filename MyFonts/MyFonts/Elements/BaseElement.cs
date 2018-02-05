@@ -3,12 +3,11 @@ using OpenQA.Selenium.Support.UI;
 
 namespace MyFonts.Elements
 {
-    class BaseElement
+  public  class BaseElement
     {
         protected By Locator;
         protected string Title;
         protected IWebElement webElement;
-
 
         public BaseElement(By locator, string title)
         {
@@ -27,6 +26,10 @@ namespace MyFonts.Elements
         {
             return webElement.Text;
         }
-
+        public  void JsClick()
+        {
+            IJavaScriptExecutor executor = (IJavaScriptExecutor)DriverClass.GetDriver();
+            executor.ExecuteScript("arguments[0].click();", webElement);
+        }
     }
 }

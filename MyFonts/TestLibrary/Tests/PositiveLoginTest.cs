@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Threading;
 using MyFonts;
 using MyFonts.BusinessObjects;
 using MyFonts.Elements;
@@ -12,10 +13,10 @@ namespace TestLibrary.Tests
 {
     [TestFixture("Chrome")]
 
-    class PositiveSearchTests : BaseSetUp
+    class PositiveLoginTest : BaseSetUp
     {
         private static string myFontEmail = "hello@myfonts.com";
-        public PositiveSearchTests(string browser) : base(browser)
+        public PositiveLoginTest(string browser) : base(browser)
         {
         }
         static object[] Users =
@@ -41,10 +42,10 @@ namespace TestLibrary.Tests
         [Test, Order(1), TestCaseSource("Users")]
         public void RegisterNewUser(string name, string email, string password)
         {
+            DriverClass.GoToUrl("http://www.myfonts.com/");
             User user = new User(name, email, password);
-            DriverClass.GoToUrl(ConfigurationManager.AppSettings["loginPageUrl"]);
-            UserRegistartionPage userRegistartionPage = new UserRegistartionPage();
-            YourAccountPage yourAccountPage = userRegistartionPage.RegisterNewUser(user);
+            MainPage mainPage = new MainPage();
+            YourAccountPage yourAccountPage =  mainPage.OpenDropMenu().SingUp().RegisterNewUser(user);
             bool isUserLoggined = yourAccountPage.IsUserLoggined(user);
             if (isUserLoggined) yourAccountPage.SignOut();
             Assert.True(isUserLoggined, "User haven't been registred");
@@ -59,7 +60,7 @@ namespace TestLibrary.Tests
             EmailsWindow emailsWindow = mailInator.OpenEmailsWindow(user.Email);
             Assert.True(emailsWindow.IsMessageFromEmailPresentOnPage(myFontEmail), "There are no registration confirm email");
         }
-        [Test]
+      /*  [Test]
         public void TestEmailSentFromMyFont()
         {
             string emailll = "astapov95@mailinator.com";
@@ -67,6 +68,8 @@ namespace TestLibrary.Tests
             MailInator mailInator = new MailInator();
             EmailsWindow emailsWindow = mailInator.OpenEmailsWindow(emailll);
             Assert.True(emailsWindow.IsMessageFromEmailPresentOnPage("al_astapov@mail.ru"), "There are no registration email");
-        }
+        }*/
+        
+       
     }
 }

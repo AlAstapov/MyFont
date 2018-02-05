@@ -59,6 +59,8 @@
     <Compile Include="HttpUtils\HttpLogin.cs" />
     <Compile Include="Pages\Email\EmailsWindow.cs" />
     <Compile Include="Pages\Email\MailInatorPage.cs" />
+    <Compile Include="Pages\MainPage.cs" />
+    <Compile Include="Pages\SignInDropMenu.cs" />
     <Compile Include="Pages\YourAccountPage.cs" />
     <Compile Include="Pages\UserRegistartionPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
