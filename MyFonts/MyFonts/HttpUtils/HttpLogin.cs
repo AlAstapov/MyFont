@@ -7,6 +7,7 @@ using MyFonts.HttpUtils;
 using OpenQA.Selenium;
 using Cookie = OpenQA.Selenium.Cookie;
 
+using System;
 
 namespace MyFonts
 {
@@ -14,13 +15,66 @@ namespace MyFonts
     {
         public void LogInWithUser(IWebDriver driver, User user)
         {
-            PostUrl = "https://www.myfonts.com/widgets/dropdown_login/login.php";
-            GetUrl = "http://www.myfonts.com/widgets/dropdown_login/dropdown_login.php?success=1";
-            RefererUrl = "http://www.myfonts.com/widgets/dropdown_login/dropdown_login.php?https=";
-            Token = "ltoken";
+            string requestVerificationToken = "__RequestVerificationToken";
+            string requestVerificationTokenValue = "";
+
+            string COSIOsession = "COSISOSession";
+            string COSIOsessionValue = "";
+                 
+            URL = "https://firmcentralcanada.demo.westlaw.com/";
+            driver.Navigate().GoToUrl(URL);
             CookieParamsToLogin = CreateCookieString(driver);
-            ParametrsToRequest = (string.Format("https=0&username={0}&password={1}", user.Email, user.Password));
+    
+            //////////////////////////////////////////////////
+           
+            var driverCookies = driver.Manage().Cookies;
+            string pageSource = driver.PageSource;
+            string pattern = requestVerificationToken + "\"\\s[\\S]*\\svalue=\"([^\"]*)";
+            var matchForRequestVerificationToken = new Regex(pattern).Matches(pageSource);
+            if (matchForRequestVerificationToken.Count > 0) requestVerificationTokenValue = matchForRequestVerificationToken[0].Groups[1].Value;
+          
+            COSIOsessionValue = driverCookies.GetCookieNamed(COSIOsession).Value;
+            ParametrsToRequest = string.Format("username={0}&overrideCaptchaFlags=False&captchaIsAlreadyDisplayed=false&{1}={2}", user.Name, requestVerificationToken, requestVerificationTokenValue);
+
+            // Captcha request
+            PostUrl = "https://signon.qa.thomsonreuters.com/v2/captchasrm/check/username/";
+            RefererUrl = driver.Url;
+
             HttpWebRequest postRequest = ExecutePostRequest(ParametrsToRequest, new Dictionary<string, string>
+                 {
+                     {"Cookie", CookieParamsToLogin}
+                 },
+                new Dictionary<string, string>
+                {
+                     {"url", PostUrl},
+                     {"ContentType", "application/x-www-form-urlencoded; charset=UTF-8"},
+                     {"Referer", RefererUrl},
+                     {"AllowAutoRedirect", "true"},
+                     {"Accept","*/*"}
+                       });
+
+
+            var postResponce = (HttpWebResponse)postRequest.GetResponse();
+
+            //COSIOSession is changed by captcha
+            var setCookie = postResponce.Headers["Set-Cookie"];
+            COSIOsessionValue = getCookieValueFromResponceHeader(setCookie, COSIOsession);
+            deleteCookieByName(COSIOsession, driver);
+            addCookie(COSIOsession, COSIOsessionValue, driver);
+            CookieParamsToLogin = CreateCookieString(driver);
+                    
+            pattern = "SiteKey\"\\s[\\S]*\\svalue=\"([^\"]*)";
+            string SiteKey = "";
+            var matchForSiteKey = new Regex(pattern).Matches(pageSource);
+            if (matchForSiteKey.Count > 0) SiteKey = matchForSiteKey[0].Groups[1].Value;
+
+
+            int minutesToMidnight = 24 * 60 - DateTime.Now.Hour * 60 - DateTime.Now.Minute;
+            ParametrsToRequest = string.Format("{0}={1}&IsCDNAvailable=False&MinutesToMidnight={2}&Username={3}&Username={4}&Password-clone={4}&SaveUsername=false&SaveUsernamePassword=false&RememberMeToday=false&SiteKey={5}&CultureCode=en&OverrideCaptchaFlags=False&recaptcha_response_field=&SignIn=submit", requestVerificationToken, requestVerificationTokenValue,minutesToMidnight, user.Name, user.Password, SiteKey);
+                       
+            //request to get login link
+            PostUrl = RefererUrl = driver.Url;
+            postRequest = ExecutePostRequest(ParametrsToRequest, new Dictionary<string, string>
                  {
                      {"Cookie", CookieParamsToLogin}
                  },
@@ -29,23 +83,45 @@ namespace MyFonts
                      {"url", PostUrl},
                      {"ContentType", "application/x-www-form-urlencoded"},
                      {"Referer", RefererUrl},
-                     {"AllowAutoRedirect", "false"}
-                });
-            var postResponce = (HttpWebResponse)postRequest.GetResponse();
-            string tokenValue = GetTokenFromResponce(Token, postResponce.Headers["Set-Cookie"]);
-            CookieParamsToLogin += string.Format("loggedIn=true; {0}={1}", Token, tokenValue);
-            driver.Manage().Cookies.AddCookie(new Cookie(Token, tokenValue));
-        }
+                     {"AllowAutoRedirect", "true"},
+                     {"Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"},
+                     {"Host","signon.qa.thomsonreuters.com" },
+                     {"Origin","https://signon.qa.thomsonreuters.com" },
+                     {"Cache-Control","max-age=0" },
+                     {"Upgrade-Insecure-Requests","1" },
+                     {"Accept-Encoding","gzip, deflate, br" },
+                     {"Accept-Language","en-US,en;q=0.9" }
+                       });
+             postResponce = (HttpWebResponse)postRequest.GetResponse();
+           
+                }
 
-        public string GetTokenFromResponce(string tokenName, string Cookie)
+
+
+
+
+
+          public string getCookieValueFromResponceHeader(string AllCookies, string cookieName)
         {
-            string token = "";
-            string pattern = tokenName + "=([a-z0-9]*)";
-            Regex regex = new Regex(pattern);
-            MatchCollection matchCollection = regex.Matches(Cookie);
-            if (matchCollection.Count > 0) token = matchCollection[0].Groups[1].Value;
-            return token;
+            string valueToReturn = "";
+            string pattern = "=([^;]*)";
+            var matchForBigIpServer = new Regex(cookieName + pattern).Matches(AllCookies);
+            if (matchForBigIpServer.Count > 0) valueToReturn = matchForBigIpServer[0].Groups[1].Value;
+            return valueToReturn;
+        }
+        public Cookie getCookieByName(string name, IWebDriver driver)
+        {
+            return driver.Manage().Cookies.GetCookieNamed(name);
+        }
+        public void deleteCookieByName( string name, IWebDriver driver)
+        {
+            driver.Manage().Cookies.DeleteCookie(getCookieByName(name, driver));
+        }
+        public void addCookie(string name, string value, IWebDriver driver)
+        {
+            driver.Manage().Cookies.AddCookie(new Cookie(name, value));
         }
     }
+
 }
 

@@ -3,13 +3,12 @@
     public class User
     {
         public string Name { get; set; }
-        public string Email { get; set; }
+        
         public string Password { get; set; }
 
-        public User(string Name, string Email, string Password)
+        public User(string Name, string Password)
         {
             this.Name = Name;
-            this.Email = Email;
             this.Password = Password;
         }
     }

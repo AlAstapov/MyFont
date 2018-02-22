@@ -1,11 +1,10 @@
-﻿using System;
+﻿
 using FrameworkCore.WebDriver;
-using MyFonts.Elements;
-using MyFonts.WorkWithFile;
+
+
 using NUnit.Framework;
 
-using OpenQA.Selenium.Support.UI;
-
+using MyFonts.WebDriver;
 
 namespace TestsLibrary.SetUp
 {
@@ -31,7 +30,7 @@ namespace TestsLibrary.SetUp
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            FileWriter.DeleteFile();
+           
             DriverClass.Dispose();
         }
     }
