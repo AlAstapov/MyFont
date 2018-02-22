@@ -65,17 +65,7 @@ namespace MyFonts.HttpUtils
             return request;
         }
 
-        protected string GetResponce(HttpWebRequest executePostRequest)
-        {
-            using (HttpWebResponse responce = (HttpWebResponse)executePostRequest.GetResponse())
-            {
-                using (StreamReader streamReader = new StreamReader(responce.GetResponseStream(), Encoding.UTF8))
-                {
-                    Responce = streamReader.ReadToEnd();
-                }
-            }
-            return Responce;
-        }
+     
 
         protected string CreateCookieString(IWebDriver driver)
         {
