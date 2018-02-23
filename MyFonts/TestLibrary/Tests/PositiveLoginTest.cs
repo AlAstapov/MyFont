@@ -18,9 +18,11 @@ namespace TestLibrary.Tests
         [Test]
         public void PositiveLoginWithHttpRequest()
         {
-            User user = new User("PTFTBTestUser08", "Password_01");
-            string url = new HttpLogin().LogInWithUser("","demo",DriverClass.GetDriver(), user);
+            User user = new User("FTBTestUser31", "Password01");
+            string url = new HttpLogin().LogInWithUser("canada","demo",DriverClass.GetDriver(), user);
 			  			bool isLoggined = false;
+            DriverClass.GetDriver().Navigate().GoToUrl(url);
+            System.Threading.Thread.Sleep(10000);
       
             Assert.True(isLoggined, "User haven't been loggined");
         }    
