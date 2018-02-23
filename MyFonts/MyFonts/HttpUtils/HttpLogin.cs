@@ -15,24 +15,26 @@ namespace MyFonts
     {
         public string LogInWithUser(string Locale, string environment,IWebDriver driver, User user)
         {
-            URL = string.Format("https://firmcentral{0}.{1}.westlaw.com/", Locale, environment);
+           
+            URL = generateURLByLocaleAndEnviroment(Locale, environment);
+            
             string BIGipServershared_apache = string.Format("BIGipServer{0}shared_apache_b", environment);
             string BIGipServershared_apache_bValue;
 
-          //  switch (environment)
-          //  {
-             //   case "ci":
-               //     BIGipServershared_apache = string.Format("BIGipServer{0}shared_apache_b", environment);
-               //     break;
-              //  case "demo":
-                 //   BIGipServershared_apache = string.Format("BIGipServer{0}shared_apache_pc1", environment);
-                 //   break;
-               // case "qed":
-                  //  BIGipServershared_apache = string.Format("BIGipServer{0}shared_apache_a", environment);
-                 //   break;
-               // default:
-                   // throw new Exception();
-           //  }
+            switch (environment)
+            {
+                case "ci":
+                    BIGipServershared_apache = string.Format("BIGipServer{0}shared_apache_b", environment);
+                    break;
+                case "demo":
+                    BIGipServershared_apache = string.Format("BIGipServer{0}shared_apache_pc1", environment);
+                    break;
+                case "qed":
+                    BIGipServershared_apache = string.Format("BIGipServer{0}shared_apache_a", environment);
+                    break;
+                default:
+                    throw new Exception();
+             }
 
 
             string web_pm = "web_pm";
@@ -143,9 +145,10 @@ namespace MyFonts
              string loginWithUserLink = CurrnetPostResponce.GetResponseHeader("Location");
 
             //request to get Co_SessionToken, Web_SessionId
-            CookieParamsToLogin = string.Format("{0}={1}; {2}={3}; {4}={5}; {6}={7}; UserSettingsLocale=locale=en-CA; tr_privacy_policy_banner=3"
-                , BIGipServershared_apache, BIGipServershared_apache_bValue, site, siteValue,ig, igValue, web_pm, web_pmValue);
-            GetUrl = loginWithUserLink;
+            string localeParam = generateLocaleParamByLocale(Locale);
+            CookieParamsToLogin = string.Format("{0}={1}; {2}={3}; {4}={5}; {6}={7}; UserSettingsLocale=locale={8}; tr_privacy_policy_banner=3"
+                , BIGipServershared_apache, BIGipServershared_apache_bValue, site, siteValue,ig, igValue, web_pm, web_pmValue,localeParam);
+            GetUrl = loginWithUserLink.Replace("http","https");
 
              CurrentGetRequest = ExecuteGetRequest(new Dictionary<string, string>
                  {
@@ -172,8 +175,9 @@ namespace MyFonts
                 ig, igValue, web_pm, web_pmValue);
             GetUrl = URL+"/session/admin?returnTo=wb/admin";
             RefererUrl = URL;
-            CookieParamsToLogin += string.Format("; {0}={1}; {2}={3}; UserSettingsLocale=locale=en-CA; tr_privacy_policy_banner=2", Co_SessionToken, Co_SessionTokenValue,
-                Web_SessionId, Web_SessionIdValue);
+
+            CookieParamsToLogin += string.Format("; {0}={1}; {2}={3}; UserSettingsLocale=locale={4}; tr_privacy_policy_banner=2", Co_SessionToken, Co_SessionTokenValue,
+                Web_SessionId, Web_SessionIdValue,localeParam);
 
             CurrentGetRequest = ExecuteGetRequest(new Dictionary<string, string>
                  {
@@ -189,9 +193,18 @@ namespace MyFonts
                      {"Accept-Language","en-US,en;q=0.9" }
                        });
             CurrnetGetResponce = (HttpWebResponse)CurrentGetRequest.GetResponse();
-            string loginWithAdminLink = CurrnetPostResponce.GetResponseHeader("Location");
+            string loginWithAdminLink = CurrnetGetResponce.GetResponseHeader("Location");
             return loginWithAdminLink;
         }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -215,6 +228,77 @@ namespace MyFonts
         {
             driver.Manage().Cookies.AddCookie(new Cookie(name, value));
         }
+
+        private string generateURLByLocaleAndEnviroment(string locale, string enviroment)
+        {
+            string urlToRetturn;
+            switch (locale)
+            {
+                case "Ca":
+                    urlToRetturn = "https://firmcentralcanada";
+                    break;
+                case "Uk":
+                    urlToRetturn = "https://firmcentral-uk";
+                    break;
+                case "Us":
+                    urlToRetturn = "https://firmcentral";
+                    break;
+                default:
+                    throw new Exception();
+            }
+            switch (enviroment)
+            {
+                
+                case "ci":
+                    urlToRetturn += ".ci.";
+                    break;
+                case "demo":
+                    urlToRetturn += ".demo.";
+                    break;
+                case "qed":
+                    urlToRetturn += ".qed.";
+                    break;
+                default:
+                    throw new Exception();
+            }
+            switch (locale)
+            {
+                case "Ca":
+                case "Us":
+
+                    urlToRetturn += "westlaw.com/";
+                    break;
+                case "Uk":
+                    urlToRetturn += "thomsonreuters.com";
+                    break;
+                default:
+                    throw new Exception();
+            }
+          
+            return urlToRetturn;
+        }
+
+
+        public string generateLocaleParamByLocale(string locale)
+        {
+            string localeParamToReturn = "";
+            switch (locale)
+            {
+                case "Ca":
+                    localeParamToReturn = "en-CA";
+                    break;
+                case "Uk":
+                    localeParamToReturn = "en-GB";
+                    break;
+                case "Us":
+                    localeParamToReturn = "";
+                    break;
+                default:
+                    throw new Exception();
+            }
+            return localeParamToReturn;
+        }
+
     }
 }
 

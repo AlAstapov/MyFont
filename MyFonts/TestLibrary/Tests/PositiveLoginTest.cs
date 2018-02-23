@@ -18,8 +18,8 @@ namespace TestLibrary.Tests
         [Test]
         public void PositiveLoginWithHttpRequest()
         {
-            User user = new User("FTBTestUser31", "Password01");
-            string url = new HttpLogin().LogInWithUser("canada","demo",DriverClass.GetDriver(), user);
+            User user = new User("FCUKPool2Admin2", "Password_01");
+            string url = new HttpLogin().LogInWithUser("Uk","qed",DriverClass.GetDriver(), user);
 			  			bool isLoggined = false;
             DriverClass.GetDriver().Navigate().GoToUrl(url);
             System.Threading.Thread.Sleep(10000);
